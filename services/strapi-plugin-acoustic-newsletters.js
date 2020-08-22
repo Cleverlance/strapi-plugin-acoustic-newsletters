@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /**
  * strapi-plugin-acoustic-newsletters.js service
@@ -8,4 +8,4 @@
 
 module.exports = {
 
-};
+}

@@ -1,12 +1,16 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 // import PropTypes from 'prop-types';
-import pluginId from '../../pluginId';
+import pluginId from '../../pluginId'
 
 const HomePage = () => {
   const [newsletters, setNewsletters] = useState([])
   useEffect(() => {
     console.log('componend did mount')
+    setNewsletters([
+      { id: 1, name: 'a' },
+      { id: 2, name: 'b' }
+    ])
   }, [])
   return (
     <div>
@@ -14,11 +18,11 @@ const HomePage = () => {
       <p>Happy coding</p>
       <ul>
         {newsletters.map(newsletter => (
-          <li key={newsletter.id}>name</li>
+          <li key={newsletter.id}>{newsletter.name}</li>
         ))}
       </ul>
     </div>
-  );
-};
+  )
+}
 
 export default HomePage

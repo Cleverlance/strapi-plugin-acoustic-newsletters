@@ -7,6 +7,9 @@
     "icon": "plug",
     "description": "Description of strapi-plugin-acoustic-newsletters plugin."
   },
+  "scripts": {
+    "standard:fix": "standard --fix"
+  },
   "dependencies": {},
   "author": {
     "name": "A Strapi developer",
