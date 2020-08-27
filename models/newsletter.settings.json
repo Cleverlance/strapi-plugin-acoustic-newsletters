@@ -1,6 +1,6 @@
 {
   "kind": "collectionType",
-  "collectionName": "newsletter",
+  "collectionName": "newsletters",
   "info": {
     "name": "newsletter"
   },
@@ -9,8 +9,55 @@
     "timestamps": true
   },
   "attributes": {
-    "text1": {
+    "subject": {
       "type": "string"
+    },
+    "published": {
+      "type": "date"
+    },
+    "currencyOnePair": {
+      "type": "string"
+    },
+    "currencyOneText": {
+      "type": "text"
+    },
+    "currencyTwoPair": {
+      "type": "string"
+    },
+    "currencyTwoText": {
+      "type": "text"
+    },
+	
+    "lastMailingPreviewLink": {
+      "type": "string"
+    },
+    "listId": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "previewLink": {
+      "type": "string"
+    },
+    "mailingId": {
+      "type": "string"
+    },
+	
+    "newsletterDailyMessages": {
+      "type": "component",
+      "repeatable": true,
+      "component": "newsletter.newsletter-daily-messages"
+    },
+    "newsletterFreeMessages": {
+      "type": "component",
+      "repeatable": true,
+      "component": "newsletter.newsletter-free-messages"
+    },
+    "signature": {
+      "plugin": "acoustic-newsletters",
+      "model": "newsletter-signature",
+      "via": "newsletters"
     }
   }
 }

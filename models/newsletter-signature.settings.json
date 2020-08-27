@@ -29,6 +29,11 @@
     },
     "url": {
       "type": "string"
+    },
+    "newsletters": {
+      "plugin": "acoustic-newsletters",
+      "via": "signature",
+      "collection": "newsletter"
     }
   }
 }

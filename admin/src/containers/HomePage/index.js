@@ -8,13 +8,50 @@ import { Link } from 'react-router-dom'
 import { useConfirm } from '../ConfirmModal'
 import { useIntl } from 'react-intl'
 
+/*
+
+*/
 const normalizeStrapiNewsletterToTheAcousticShape = (strapiNewsletter) => {
   // TODO: add data normalization for compatible shape with the IBM
-  return [strapiNewsletter]
+  return strapiNewsletter
+  /*
+  return {
+      "currencyOnePair": strapiNewsletter.currencyOnePair,
+      "currencyOneText": strapiNewsletter.currencyOnePair
+      "currencyTwoPair": strapiNewsletter.currencyOnePair
+      "currencyTwoText": strapiNewsletter.currencyOnePair
+      "newsletterDailyMessages": [
+        {
+          "country": strapiNewsletter.currencyOnePair
+          "estimated": strapiNewsletter.currencyOnePair
+          "previous": string
+          "subject": string
+          "time": string
+        }
+      ],
+      "newsletterFreeMessages": [
+        {
+          "subject": string
+          "text": string
+        }
+      ],
+      "published": string,
+      "signature": {
+        "address": string
+        "email": string
+        "name": string
+        "phone": string
+        "photo": string
+        "position": string
+        "url": string
+      },
+      "subject": string
+    }
+    */
 }
 
-const detailPath = '/plugins/content-manager/collectionType/plugins::acoustic-newsletters.acousticnewsletter'
-const locationPath = '/plugins/acoustic-newsletters'
+const detailPath = '/plugins/content-manager/collectionType/plugins::acoustic-newsletters.newsletter'
+const locationPath = '/plugins/newsletters'
 
 const HomePage = () => {
   const [newsletters, setNewsletters] = useState([])
