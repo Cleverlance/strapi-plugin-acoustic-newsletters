@@ -3,7 +3,7 @@
     {
       "method": "GET",
       "path": "/",
-      "handler": "acoustic-newsletters.index",
+      "handler": "newsletter.find",
       "config": {
         "policies": []
       }

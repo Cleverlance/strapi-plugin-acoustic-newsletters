@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "newsletter_signatures",
+  "info": {
+    "name": "NewsletterSignature"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "address": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "name": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "photo": {
+      "type": "json"
+    },
+    "position": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    }
+  }
+}

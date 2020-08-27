@@ -1,26 +1,88 @@
 
 import React, { useEffect, useState } from 'react'
-// import PropTypes from 'prop-types';
 import pluginId from '../../pluginId'
+import { request } from 'strapi-helper-plugin'
+// import styled from 'styled-components'
+import { List, Button } from '@buffetjs/core'
+import { Link } from 'react-router-dom'
+import { useConfirm } from '../ConfirmModal'
+import { useIntl } from 'react-intl'
+
+const normalizeStrapiNewsletterToTheAcousticShape = (strapiNewsletter) => {
+  // TODO: add data normalization for compatible shape with the IBM
+  return [strapiNewsletter]
+}
+
+const detailPath = '/plugins/content-manager/collectionType/plugins::acoustic-newsletters.acousticnewsletter'
+const locationPath = '/plugins/acoustic-newsletters'
 
 const HomePage = () => {
   const [newsletters, setNewsletters] = useState([])
+  const { confirmModal } = useConfirm()
+  const { formatMessage } = useIntl()
+
   useEffect(() => {
-    console.log('componend did mount')
-    setNewsletters([
-      { id: 1, name: 'a' },
-      { id: 2, name: 'b' }
-    ])
+    const fetchData = async () => {
+      const data = await request(`/${pluginId}/`)
+      console.log('Component did mount', data)
+      setNewsletters(data)
+    }
+    fetchData()
   }, [])
+
+  const sendNewsletter = async (newsletterId) => {
+    const shouldSend = await confirmModal(
+      'acoustic-newsletters.homepage.list.item.confirm.title',
+      'acoustic-newsletters.homepage.list.item.confirm.message'
+    )
+
+    if (!shouldSend) {
+      return
+    }
+
+    const newsletter = newsletters.find(({ id }) => id === newsletterId)
+    const newsletterToSend = normalizeStrapiNewsletterToTheAcousticShape(newsletter)
+
+    const data = normalizeStrapiNewsletterToTheAcousticShape(newsletterToSend)
+
+    console.log('__data__')
+    console.log(data)
+
+    // normalize data into acoustic shape
+    // read acoustic IBM URL from the configuration
+    // send dat to the acoustic
+    window.alert('not supported yet')
+  }
+
   return (
     <div>
-      <h1>{pluginId}&apos;s HomePage</h1>
-      <p>Happy coding</p>
-      <ul>
-        {newsletters.map(newsletter => (
-          <li key={newsletter.id}>{newsletter.name}</li>
-        ))}
-      </ul>
+      <h1>
+        {formatMessage({ id: 'acoustic-newsletters.homepage.title' })}
+      </h1>
+
+      <List
+        items={newsletters.map(newsletter => ({
+          id: newsletter.id,
+          text: newsletter.text1,
+          updateNewsletter: (
+            <Link
+              to={`${detailPath}/${newsletter.id}?redirectUrl=${locationPath}`}
+            >
+              <Button color='secondary'>
+                {formatMessage({ id: 'acoustic-newsletters.homepage.edit.button' })}
+              </Button>
+            </Link>
+          ),
+          sendNewsletter: (
+            <Button
+              onClick={() => sendNewsletter(newsletter.id)}
+              color='primary'
+            >
+              {formatMessage({ id: 'acoustic-newsletters.homepage.sendNewsletter.button' })}
+            </Button>
+          )
+        }))}
+      />
     </div>
   )
 }
