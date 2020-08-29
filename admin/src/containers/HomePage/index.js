@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import pluginId from '../../pluginId'
 import { request } from 'strapi-helper-plugin'
-// import styled from 'styled-components'
+import styled from 'styled-components'
 import { List, Button } from '@buffetjs/core'
 import { Link } from 'react-router-dom'
 import { useConfirm } from '../ConfirmModal'
@@ -30,13 +30,13 @@ const normalizeStrapiNewsletterToTheAcousticShape = (strapiNewsletter) => {
     })),
     published: strapiNewsletter.published,
     signature: {
-      address: strapiNewsletter.address,
-      email: strapiNewsletter.email,
-      name: strapiNewsletter.name,
-      phone: strapiNewsletter.phone,
-      photo: strapiNewsletter.photo,
-      position: strapiNewsletter.position,
-      url: strapiNewsletter.url
+      address: strapiNewsletter.signature.address,
+      email: strapiNewsletter.signature.email,
+      name: strapiNewsletter.signature.name,
+      phone: strapiNewsletter.signature.phone,
+      photo: strapiNewsletter.signature.photo,
+      position: strapiNewsletter.signature.position,
+      url: strapiNewsletter.signature.url
     },
     subject: strapiNewsletter.subject
   }
@@ -148,33 +148,47 @@ const HomePage = () => {
 
       <List
         items={newsletters.map(newsletter => ({
-          id: newsletter.id,
-          text: newsletter.text1,
+          subject: newsletter.subject,
           updateNewsletter: (
-            <Link
-              to={`${detailPath}/${newsletter.id}?redirectUrl=${locationPath}`}
-            >
-              <Button color='secondary'>
-                {formatMessage({ id: 'acoustic-newsletters.homepage.edit.button' })}
+            <>
+              <Link
+                to={`${detailPath}/${newsletter.id}?redirectUrl=${locationPath}`}
+              >
+                <Button color='secondary'>
+                  {formatMessage({ id: 'acoustic-newsletters.homepage.edit.button' })}
+                </Button>
+              </Link>
+              <Button
+                onClick={() => sendNewsletter(newsletter.id)}
+                color='primary'
+              >
+                {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.send.button' })}
               </Button>
-            </Link>
-          ),
-          sendNewsletter: (
-            <Button
-              onClick={() => sendNewsletter(newsletter.id)}
-              color='primary'
-            >
-              {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.send.button' })}
-            </Button>
-          ),
-          showPreview: (
-            <Button
-              onClick={() => showPreview(newsletter.id)}
-              color='primary'
-            >
-              {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.showPreview.button' })}
-            </Button>
+
+              <Button
+                onClick={() => showPreview(newsletter.id)}
+                color='primary'
+              >
+                {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.showPreview.button' })}
+              </Button>
+            </>
           )
+          // sendNewsletter: (
+          //   <Button
+          //     onClick={() => sendNewsletter(newsletter.id)}
+          //     color='primary'
+          //   >
+          //     {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.send.button' })}
+          //   </Button>
+          // ),
+          // showPreview: (
+          //   <Button
+          //     onClick={() => showPreview(newsletter.id)}
+          //     color='primary'
+          //   >
+          //     {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.showPreview.button' })}
+          //   </Button>
+          // )
         }))}
       />
     </div>
