@@ -8,6 +8,10 @@
 
 module.exports = {
 
+  getAcousticNewsletterConfig: (ctx) => {
+    const data = global.strapi.config.acousticNewsletters
+    ctx.body = data
+  },
   find: async (ctx) => {
     // TODO: add normalizer
     return global.strapi.query('newsletter', 'acoustic-newsletters').find()

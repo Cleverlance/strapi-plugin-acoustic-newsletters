@@ -1,16 +1,14 @@
-
 import React, { useEffect, useState } from 'react'
 import pluginId from '../../pluginId'
 import { request } from 'strapi-helper-plugin'
-import styled from 'styled-components'
 import { List, Button } from '@buffetjs/core'
 import { Link } from 'react-router-dom'
 import { useConfirm } from '../ConfirmModal'
 import { useIntl } from 'react-intl'
+import styled from 'styled-components'
 
 const normalizeStrapiNewsletterToTheAcousticShape = (strapiNewsletter) => {
-//   return strapiNewsletter
-// }
+  // return strapiNewsletter
   // TODO: add data normalization for compatible shape with the IBM
   return {
     currencyOnePair: strapiNewsletter.currencyOnePair,
@@ -45,7 +43,22 @@ const normalizeStrapiNewsletterToTheAcousticShape = (strapiNewsletter) => {
 const detailPath = '/plugins/content-manager/collectionType/plugins::acoustic-newsletters.newsletter'
 const locationPath = '/plugins/newsletters'
 
-const HomePage = () => {
+const DivList = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`
+
+const DivRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  background: white;
+  padding: 1rem;
+  border-bottom: 1px solid #EEE;
+`
+
+const HomePage = ({ newsletterUrl }) => {
   const [newsletters, setNewsletters] = useState([])
   const { confirmModal } = useConfirm()
   const { formatMessage } = useIntl()
@@ -53,9 +66,9 @@ const HomePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await request(`/${pluginId}/`)
-      console.log('Component did mount', data)
       setNewsletters(data)
     }
+
     fetchData()
   }, [])
 
@@ -69,11 +82,11 @@ const HomePage = () => {
       return
     }
 
-    const newsletter = newsletters.find(({ id }) => id === newsletterId)
-    const newsletterToSend = normalizeStrapiNewsletterToTheAcousticShape(newsletter)
+    // const newsletter = newsletters.find(({ id }) => id === newsletterId)
+    // const newsletterToSend = normalizeStrapiNewsletterToTheAcousticShape(newsletter)
 
     // show preview =>
-    console.log(newsletterToSend)
+    // console.log(newsletterToSend)
 
     // normalize data into acoustic shape
     // read acoustic IBM URL from the configuration
@@ -86,7 +99,7 @@ const HomePage = () => {
     const newsletterToSend = normalizeStrapiNewsletterToTheAcousticShape(newsletter)
     try {
       const res = await window.fetch(
-        'https://clevercmssit.creditas.cleverlance.com/capi/newsletter/create', {
+        `${newsletterUrl}/create`, {
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json'
@@ -131,8 +144,6 @@ const HomePage = () => {
         })
 
       const data = await res.json()
-      console.log(data)
-
       window.open(data.previewLink)
       // window.open(data.url)
     } catch (err) {
@@ -146,51 +157,41 @@ const HomePage = () => {
         {formatMessage({ id: 'acoustic-newsletters.homepage.title' })}
       </h1>
 
-      <List
-        items={newsletters.map(newsletter => ({
-          subject: newsletter.subject,
-          updateNewsletter: (
-            <>
-              <Link
-                to={`${detailPath}/${newsletter.id}?redirectUrl=${locationPath}`}
-              >
-                <Button color='secondary'>
-                  {formatMessage({ id: 'acoustic-newsletters.homepage.edit.button' })}
+      <DivList>
+        {
+          newsletters.map(newsletter => (
+            <DivRow key={newsletter.id}>
+              <div style={{ width: '50%' }}>{newsletter.subject}</div>
+              <div>
+                <Link
+                  to={`${detailPath}/${newsletter.id}?redirectUrl=${locationPath}`}
+                >
+                  <Button color='secondary'>
+                    {formatMessage({ id: 'acoustic-newsletters.homepage.edit.button' })}
+                  </Button>
+                </Link>
+              </div>
+              <div>
+                <Button
+                  onClick={() => sendNewsletter(newsletter.id)}
+                  color='primary'
+                >
+                  {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.send.button' })}
                 </Button>
-              </Link>
-              <Button
-                onClick={() => sendNewsletter(newsletter.id)}
-                color='primary'
-              >
-                {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.send.button' })}
-              </Button>
+              </div>
+              <div>
+                <Button
+                  onClick={() => showPreview(newsletter.id)}
+                  color='primary'
+                >
+                  {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.showPreview.button' })}
+                </Button>
+              </div>
+            </DivRow>
+          ))
+        }
+      </DivList>
 
-              <Button
-                onClick={() => showPreview(newsletter.id)}
-                color='primary'
-              >
-                {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.showPreview.button' })}
-              </Button>
-            </>
-          )
-          // sendNewsletter: (
-          //   <Button
-          //     onClick={() => sendNewsletter(newsletter.id)}
-          //     color='primary'
-          //   >
-          //     {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.send.button' })}
-          //   </Button>
-          // ),
-          // showPreview: (
-          //   <Button
-          //     onClick={() => showPreview(newsletter.id)}
-          //     color='primary'
-          //   >
-          //     {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.showPreview.button' })}
-          //   </Button>
-          // )
-        }))}
-      />
     </div>
   )
 }

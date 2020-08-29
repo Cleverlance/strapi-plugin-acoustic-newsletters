@@ -1,9 +1,29 @@
-# Strapi plugin page-hierarchy
+# Strapi plugin acoustic-newsletters
 
 ## installation
 ```
-yarn strapi install page-hierarchy
+yarn strapi install acoustic-newsletters
 ```
+
+## configuration
+create `/config/acousticNewsletters.js` and setup url for the newsletter backend like:
+
+```javascript
+module.exports = ({ env }) => ({
+  // TODO: implement env variable
+  url: 'https://clevercmssit.creditas.cleverlance.com/capi/newsletter'jj
+});
+
+```
+these config is served vai HTTP endpoint to the frontend of the plugin
+
+## Strapi issue with creating components in the plugin
+issue: https://github.com/strapi/strapi/issues/7640
+
+now you have to go to the `/components_copy_dependency` and move its content into root of your project to the `/components` folder 
+for correct database definition
+
+
 
 ## development 
 
@@ -11,9 +31,9 @@ yarn strapi install page-hierarchy
 
 [official docs](https://strapi.io/documentation/3.0.0-beta.x/installation/cli.html)
 ```sh
-yarn create strapi-app page-hierarchy-plugin-test --quickstart
+yarn create strapi-app acoustic-newsletters-plugin-test --quickstart
 
-cd page-hierarchy-plugin-test
+cd acoustic-newsletters-plugin-test
 
 # create a sym-link for cloned plugin repo:
 
@@ -23,7 +43,7 @@ yarn dev --watch-admin
 
 1. Clone repo
 
-2. Create symlink for custom `strapi-plugin-page-hierarchy`
+2. Create symlink for custom `strapi-plugin-acoustic-newsletters`
 
 ```sh
 # MacOS

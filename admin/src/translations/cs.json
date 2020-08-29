@@ -4,6 +4,6 @@
   "homepage.list.item.confirm.title": "Confirm title",
   "homepage.list.item.confirm.message": "Confirm message",
   "homepage.edit.button": "Upravit",
-  "homepage.newsletter.send.button": "Poslat newsletter",
-  "homepage.newsletter.showPreview.button": "Ukázat newsletter"
+  "homepage.newsletter.send.button": "Poslat",
+  "homepage.newsletter.showPreview.button": "Náhled"
 }
