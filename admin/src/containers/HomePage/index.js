@@ -86,7 +86,6 @@ const HomePage = ({ newsletterUrl }) => {
     // const newsletterToSend = normalizeStrapiNewsletterToTheAcousticShape(newsletter)
 
     // show preview =>
-    // console.log(newsletterToSend)
 
     // normalize data into acoustic shape
     // read acoustic IBM URL from the configuration
