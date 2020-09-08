@@ -1,42 +1,61 @@
 import React, { useEffect, useState } from 'react'
 import pluginId from '../../pluginId'
 import { request } from 'strapi-helper-plugin'
-import { List, Button } from '@buffetjs/core'
+import { Button } from '@buffetjs/core'
 import { Link } from 'react-router-dom'
 import { useConfirm } from '../ConfirmModal'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 
+// service layer
+const setNewsletterSended = async (newsletterId) => (
+  request(
+    `/${pluginId}/setIsSended`,
+    {
+      method: 'POST',
+      body: {
+        id: newsletterId
+      }
+    }
+  )
+)
+
 const normalizeStrapiNewsletterToTheAcousticShape = (strapiNewsletter) => {
   // return strapiNewsletter
   // TODO: add data normalization for compatible shape with the IBM
-  return {
-    currencyOnePair: strapiNewsletter.currencyOnePair,
-    currencyOneText: strapiNewsletter.currencyOneText,
-    currencyTwoPair: strapiNewsletter.currencyTwoPair,
-    currencyTwoText: strapiNewsletter.currencyTwoText,
-    newsletterDailyMessages: strapiNewsletter.newsletterDailyMessages.map(n => ({
-      country: n.country,
-      estimated: n.estimated,
-      previous: n.previous,
-      subject: n.subject,
-      time: n.time
-    })),
-    newsletterFreeMessages: strapiNewsletter.newsletterFreeMessages.map(n => ({
-      subject: n.subject,
-      text: n.text
-    })),
-    published: strapiNewsletter.published,
-    signature: {
-      address: strapiNewsletter.signature.address,
-      email: strapiNewsletter.signature.email,
-      name: strapiNewsletter.signature.name,
-      phone: strapiNewsletter.signature.phone,
-      photo: strapiNewsletter.signature.photo,
-      position: strapiNewsletter.signature.position,
-      url: strapiNewsletter.signature.url
-    },
-    subject: strapiNewsletter.subject
+  try {
+    const data = {
+      currencyOnePair: strapiNewsletter.currencyOnePair,
+      currencyOneText: strapiNewsletter.currencyOneText,
+      currencyTwoPair: strapiNewsletter.currencyTwoPair,
+      currencyTwoText: strapiNewsletter.currencyTwoText,
+      newsletterDailyMessages: strapiNewsletter.newsletterDailyMessages.map(n => ({
+        country: n.country,
+        estimated: n.estimated,
+        previous: n.previous,
+        subject: n.subject,
+        time: n.time
+      })),
+      newsletterFreeMessages: strapiNewsletter.newsletterFreeMessages.map(n => ({
+        subject: n.subject,
+        text: n.text
+      })),
+      published: strapiNewsletter.published,
+      signature: {
+        address: strapiNewsletter.signature.address,
+        email: strapiNewsletter.signature.email,
+        name: strapiNewsletter.signature.name,
+        phone: strapiNewsletter.signature.phone,
+        photo: strapiNewsletter.signature.photo,
+        position: strapiNewsletter.signature.position,
+        url: strapiNewsletter.signature.url
+      },
+      subject: strapiNewsletter.subject
+    }
+    return data
+  } catch (err) {
+    window.alert('invalid newsletter data')
+    return null
   }
 }
 
@@ -60,13 +79,14 @@ const DivRow = styled.div`
 
 const HomePage = ({ newsletterUrl }) => {
   const [newsletters, setNewsletters] = useState([])
+  const [loading, setLoading] = useState(false)
   const { confirmModal } = useConfirm()
   const { formatMessage } = useIntl()
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await request(`/${pluginId}/`)
-      setNewsletters(data)
+      setNewsletters(Array.isArray(data) ? data : [])
     }
 
     fetchData()
@@ -82,21 +102,52 @@ const HomePage = ({ newsletterUrl }) => {
       return
     }
 
-    // const newsletter = newsletters.find(({ id }) => id === newsletterId)
-    // const newsletterToSend = normalizeStrapiNewsletterToTheAcousticShape(newsletter)
+    const newsletterData = await createPreview(newsletterId)
+    if (!newsletterData) {
+      window.alert('error while creating newsletter ')
+    }
 
-    // show preview =>
+    setLoading(true)
+    try {
+      // https://clevercmssit.creditas.cleverlance.com/capi/swagger-ui.html#!/Newsletter/sendNewsletterUsingPOST
+      await window.fetch(
+        `${newsletterUrl}/send`, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          method: 'POST',
+          body: JSON.stringify({
+            mailingId: newsletterData.mailingId
+          })
+        })
+
+      await setNewsletterSended(newsletterId)
+      window.alert('Newsletter odeslán')
+      setNewsletters(newsletters => newsletters.map(n => n.id === newsletterId
+        ? { ...n, isSended: true }
+        : n)
+      )
+    } catch (err) {
+      console.error(err)
+      window.alert(err)
+    }
+    setLoading(false)
 
     // normalize data into acoustic shape
     // read acoustic IBM URL from the configuration
     // send dat to the acoustic
-    window.alert('not supported yet')
   }
 
-  const showPreview = async (newsletterId) => {
+  const createPreview = async (newsletterId) => {
     const newsletter = newsletters.find(({ id }) => id === newsletterId)
     const newsletterToSend = normalizeStrapiNewsletterToTheAcousticShape(newsletter)
+    if (!newsletterToSend) {
+      return
+    }
+    setLoading(true)
     try {
+      // https://clevercmssit.creditas.cleverlance.com/capi/swagger-ui.html#!/Newsletter/createNewsletterUsingPOST
       const res = await window.fetch(
         `${newsletterUrl}/create`, {
           headers: {
@@ -106,48 +157,16 @@ const HomePage = ({ newsletterUrl }) => {
           method: 'POST',
           body: JSON.stringify(
             newsletterToSend
-            // {
-            //   currencyOnePair: 'EUR / CZK',
-            //   currencyOneText: 'Koruna se pred dnesnim zasedani...',
-            //   currencyTwoPair: 'EUR / USD',
-            //   currencyTwoText: 'Predbeny pruzkumy prezidentskych voleb v USA...',
-            //   newsletterDailyMessages: [
-            //     {
-            //       country: 'CZ',
-            //       estimated: 'string',
-            //       previous: 'string',
-            //       subject: 'CNB Interest Rate',
-            //       time: '14:30',
-            //       unit: '10'
-            //     }
-            //   ],
-            //   newsletterFreeMessages: [
-            //     {
-            //       subject: 'string',
-            //       text: 'string'
-            //     }
-            //   ],
-            //   published: '24. 6. 2020',
-            //   signature: {
-            //     address: 'Brno-mesto',
-            //     email: 'test%40cleverlance.com',
-            //     name: 'Jan Novak',
-            //     phone: '+420 777 777 777',
-            //     photo: 'http://www.cleverlance.com',
-            //     position: 'Vedouci',
-            //     url: 'http://www.cleverlance.com'
-            //   },
-            //   subject: 'Vyvoj na devizovem trhu'
-            // }
           )
         })
 
       const data = await res.json()
-      window.open(data.previewLink)
-      // window.open(data.url)
+      setLoading(false)
+      return data
     } catch (err) {
       console.error(err)
     }
+    setLoading(false)
   }
 
   return (
@@ -170,20 +189,28 @@ const HomePage = ({ newsletterUrl }) => {
                   </Button>
                 </Link>
               </div>
+
+              <div>
+                <Button
+                  onClick={async () => {
+                    const newsletterData = await createPreview(newsletter.id)
+                    if (newsletterData) {
+                      window.open(newsletterData.previewLink)
+                    }
+                  }}
+                  color='primary'
+                >
+                  {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.showPreview.button' })}
+                </Button>
+              </div>
+
               <div>
                 <Button
                   onClick={() => sendNewsletter(newsletter.id)}
                   color='primary'
+                  disabled={newsletter.isSended || loading}
                 >
                   {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.send.button' })}
-                </Button>
-              </div>
-              <div>
-                <Button
-                  onClick={() => showPreview(newsletter.id)}
-                  color='primary'
-                >
-                  {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.showPreview.button' })}
                 </Button>
               </div>
             </DivRow>

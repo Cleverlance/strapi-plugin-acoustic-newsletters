@@ -1,10 +1,7 @@
 import { LoadingIndicatorPage, request, NotFound } from 'strapi-helper-plugin'
 import React, { useState, useEffect } from 'react'
 import { Switch, Route } from 'react-router-dom'
-
-// Utils
 import pluginId from '../../pluginId'
-// Containers
 import HomePage from '../HomePage'
 import { ConfirmModalProvider } from '../ConfirmModal'
 

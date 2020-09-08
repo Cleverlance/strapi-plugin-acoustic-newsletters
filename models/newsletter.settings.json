@@ -43,6 +43,10 @@
     "mailingId": {
       "type": "string"
     },
+    "isSended": {
+      "type": "boolean",
+      "default": false
+    },
 	
     "newsletterDailyMessages": {
       "type": "component",
