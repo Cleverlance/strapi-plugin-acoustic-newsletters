@@ -1,6 +1,6 @@
 {
-  "name": "strapi-plugin-acoustic-newsletters",
-  "version": "3.1.4-gama-radiation.2",
+  "name": "@cleverlance-enterprise-solutions/strapi-plugin-acoustic-newsletters",
+  "version": "3.1.4-alpha.2",
   "description": "This is the description of the plugin.",
   "strapi": {
     "name": "acoustic-newsletters",
