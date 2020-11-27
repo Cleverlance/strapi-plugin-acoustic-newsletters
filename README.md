@@ -1,8 +1,16 @@
 # Strapi plugin acoustic-newsletters
 
 ## installation
-```
+
+```bash
+
 yarn strapi install acoustic-newsletters
+
+yarn add acoustic-newsletters
+yarn build
+
+# pay attention
+copy components_copy_dependency to the root of your project
 ```
 
 ## configuration
