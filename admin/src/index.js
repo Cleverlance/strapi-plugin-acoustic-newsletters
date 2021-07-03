@@ -4,6 +4,7 @@ import App from './containers/App'
 import Initializer from './containers/Initializer'
 import lifecycles from './lifecycles'
 import trads from './translations'
+import pluginPermissions from './permissions';
 
 export default strapi => {
   const pluginDescription = pluginPkg.strapi.description || pluginPkg.description
@@ -36,13 +37,7 @@ export default strapi => {
             defaultMessage: name
           },
           name,
-          permissions: [
-            // Uncomment to set the permissions of the plugin here
-            // {
-            //   action: '', // the action name should be plugins::plugin-name.actionType
-            //   subject: null,
-            // },
-          ]
+          permissions: pluginPermissions.accessPermission
         }
       ]
     }

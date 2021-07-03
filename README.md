@@ -8,10 +8,10 @@ yarn strapi install acoustic-newsletters
 
 yarn add acoustic-newsletters
 yarn build
-
-# pay attention
-copy components_copy_dependency to the root of your project
 ```
+
+Copy the content of `components_copy_dependency` to the `/components`
+
 
 ## configuration
 create `/config/acousticNewsletters.js` and setup url for the newsletter backend like:
@@ -21,9 +21,16 @@ module.exports = ({ env }) => ({
   // TODO: implement env variable
   url: 'https://clevercmssit.creditas.cleverlance.com/capi/newsletter'jj
 });
-
 ```
 these config is served vai HTTP endpoint to the frontend of the plugin
+
+### Rights settings
+The rights cannot be edited using Administration panel in the Community edition of Strapi. It is needed to configure the rights directly in the database using sql insert like this:
+
+```sql
+insert into strapi_permission (action, properties, conditions, role, created_at, updated_at) values
+('plugins::acoustic-newsletters.access-permission', '{}', '[]', 3, '2021-07-03', '2021-07-03');
+```
 
 ## Strapi issue with creating components in the plugin
 issue: https://github.com/strapi/strapi/issues/7640

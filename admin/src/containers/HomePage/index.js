@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom'
 import { useConfirm } from '../ConfirmModal'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
+import { CheckPermissions } from 'strapi-helper-plugin';
+import pluginPermissions from '../../permissions';
 
 // service layer
 const setNewsletterSended = async (newsletterId) => (
@@ -180,15 +182,17 @@ const HomePage = ({ newsletterUrl }) => {
           newsletters.map(newsletter => (
             <DivRow key={newsletter.id}>
               <div style={{ width: '50%' }}>{newsletter.subject}</div>
-              <div>
-                <Link
-                  to={`${detailPath}/${newsletter.id}?redirectUrl=${locationPath}`}
-                >
-                  <Button color='secondary'>
-                    {formatMessage({ id: 'acoustic-newsletters.homepage.edit.button' })}
-                  </Button>
-                </Link>
-              </div>
+              <CheckPermissions permissions={pluginPermissions.editPermission}>
+                <div>
+                  <Link
+                    to={`${detailPath}/${newsletter.id}?redirectUrl=${locationPath}`}
+                  >
+                    <Button color='secondary'>
+                      {formatMessage({ id: 'acoustic-newsletters.homepage.edit.button' })}
+                    </Button>
+                  </Link>
+                </div>
+              </CheckPermissions>
 
               <div>
                 <Button
@@ -204,15 +208,17 @@ const HomePage = ({ newsletterUrl }) => {
                 </Button>
               </div>
 
-              <div>
-                <Button
-                  onClick={() => sendNewsletter(newsletter.id)}
-                  color='primary'
-                  disabled={newsletter.isSended || loading}
-                >
-                  {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.send.button' })}
-                </Button>
-              </div>
+              <CheckPermissions permissions={pluginPermissions.sendPermission}>
+                <div>
+                  <Button
+                    onClick={() => sendNewsletter(newsletter.id)}
+                    color='primary'
+                    disabled={newsletter.isSended || loading}
+                  >
+                    {formatMessage({ id: 'acoustic-newsletters.homepage.newsletter.send.button' })}
+                  </Button>
+                </div>
+              </CheckPermissions>
             </DivRow>
           ))
         }
