@@ -177,9 +177,16 @@ const HomePage = ({ newsletterUrl }) => {
 
       <DivList>
         {
-          newsletters.map(newsletter => (
+          newsletters
+          .sort((a, b) => Date.parse(new Date(b.updated_at)) - Date.parse(new Date(a.updated_at)))
+          .map(newsletter => (
             <DivRow key={newsletter.id}>
               <div style={{ width: '50%' }}>{newsletter.subject}</div>
+              
+              <div style={{ width: '150px' }}>
+                {new Date(newsletter.updated_at).toLocaleDateString() + ' ' + new Date(newsletter.updated_at).toLocaleTimeString()}
+              </div>
+
               <div>
                 <Link
                   to={`${detailPath}/${newsletter.id}?redirectUrl=${locationPath}`}
